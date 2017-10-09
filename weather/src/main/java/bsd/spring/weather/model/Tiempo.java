@@ -8,8 +8,21 @@ public class Tiempo implements Serializable {
 	
 	private String ciudad, region, pais, temperatura;
 
+	public Tiempo(String ciudad, String region, String pais, String temperatura) {
+		this.ciudad = ciudad;
+		this.region = region;
+		this.pais = pais;
+		this.temperatura = temperatura;
+	}
+
 	public String getCiudad() {
 		return ciudad;
+	}
+
+	@Override
+	public String toString() {
+		return "Tiempo [ciudad=" + ciudad + ", region=" + region + ", pais=" + pais + ", temperatura=" + temperatura
+				+ "]";
 	}
 
 	public void setCiudad(String ciudad) {

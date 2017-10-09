@@ -1,6 +1,8 @@
 package bsd.spring.weather.service;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,4 +33,9 @@ public class MainServiceImpl implements MainService
   {
     return loginDaoImpl.insertarConsulta(weather, username);
   }
+
+@Override
+public List<Tiempo> getConsultas(String username) {
+	return loginDaoImpl.getConsultas(username);
+}
 }
