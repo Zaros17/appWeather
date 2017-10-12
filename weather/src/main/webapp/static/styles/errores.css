@@ -1,0 +1,7 @@
+input.ng-invalid.ng-dirty {
+	background: #ffebee;
+}
+
+.error {
+	color: #e57373;
+}

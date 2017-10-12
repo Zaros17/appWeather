@@ -1,8 +1,10 @@
 package bsd.spring.weather.config;
 
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -45,6 +47,22 @@ public class WebConfig extends WebMvcConfigurerAdapter{
 	    registry
 	      .addResourceHandler("/static/**")
 	      .addResourceLocations("/static/");
+	}
+	
+	/*
+	 * Devolución de un bean para cargar y acceder al paquete de
+	 * recursos (fichero de propiedades) cuyo nombre sin extensión es
+	 * errores
+	 */
+	@Bean
+	public MessageSource messageSource() {
+		// Crear paquete de recursos
+		ResourceBundleMessageSource source = new ResourceBundleMessageSource();
+		
+		// Cargar paquete
+		source.setBasename("errores");
+		
+		return source;
 	}
 	
 }

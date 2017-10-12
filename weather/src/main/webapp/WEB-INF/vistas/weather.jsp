@@ -1,104 +1,120 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html ng-app="weather">
 <head>
 <meta charset="utf-8">
-<title>Insert title here</title>
-<!-- Compiled and minified CSS -->
+<title>Tiempo - appWeather</title>
+<link rel="icon" href="static/img/icon.ico">
 <link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script type="text/javascript"
 	src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js"></script>
-<link rel="stylesheet" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.10.3/themes/flick/jquery-ui.css" />
-<style type="text/css">
-.ui-menu .ui-menu-item a,.ui-menu .ui-menu-item a.ui-state-hover, .ui-menu .ui-menu-item a.ui-state-active {
-	font-weight: normal;
-	margin: -1px;
-	text-align:left;
-	font-size:14px;
-	}
-	
-	input.ng-invalid.ng-dirty {
-	background: #ffebee;
-}
+<link rel="stylesheet"
+	href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.10.3/themes/flick/jquery-ui.css" />
+<link rel="stylesheet"
+	href="static/styles/weather.css" />
 
-.error {
-	color: #e57373;
-}
-</style>
 </head>
-<body>
-	<div class="container" style="margin-top: 10%" ng-controller="weatherCtrl">
-	<h2>Bienvenido, ${ sessionScope.username }</h2>
-		<div class="row">
-			<div class="col s3 offset-s4 z-depth-1 ">
-				<form ng-submit="getWeather(search)"  novalidate="novalidate" name="form_citydetails" id="form_citydetails" enctype="multipart/form-data">
-					<div class="row" style="padding: 3%" >
-						<input type="text" name="search" value="" id="f_elem_city" ng-model="search" maxlength="36" ng-minlength="3" required />
-						<span class="error" ng-show="form_citydetails.search.$invalid && form_citydetails.search.$dirty ">Mínimo 3 caracteres</span>
-						<div class="row center align" style="padding: 3%">
-							<button class="btn waves-effect waves-light light-blue center-align"
-								type="submit" ng-disabled="form_citydetails.$invalid">Buscar</button>
+<body ng-controller="weatherCtrl" ng-style="setBg(code, day)">
+
+	<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">appWeather</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Consultar tiempo <span class="sr-only">(current)</span></a></li>
+        <li><a href="<c:url value='/historial' />">Historial&nbsp;<span ng-show="num > 0" class="badge">{{ num }}</span></a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <span class="navbar-text">Bienvenido, ${ sessionScope.username }</span>
+        <li><a href="<c:url value='/logout' />">Cerrar sesiÃ³n</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+	
+	<div class="container" style="margin-top: 10%" id="weatherDiv">
+		<div class="row">				
+			<div class="well col-sm-4 col-sm-offset-4">
+					<form class="form-inline" ng-submit="getWeather(search)"
+						novalidate="novalidate" name="form_citydetails"
+						id="form_citydetails">
+						<div class="form-row">
+							<div class="col inner-addon left-addon">
+								<i class="glyphicon glyphicon-search"></i> <input type="text"
+									name="search" class="form-control" style="margin-right:1%" value="" id="f_elem_city" ng-model="search" 
+									maxlength="36" ng-minlength="3" placeholder="Busca una ciudad" required> <span
+									class="error"
+									ng-show="form_citydetails.search.$invalid && form_citydetails.search.$dirty ">MÃ­nimo
+									3 caracteres</span>
+								<button type="submit" ng-disabled="form_citydetails.$invalid"
+									class="btn btn-primary">Buscar</button>
+							</div>
 						</div>
-					</div>
-				</form>
-			</div>
+					</form>
+				</div>
 		</div>
-		
+
 		<div class="row">
-			<div ng-show="mostrar">
-			<h4>El tiempo</h4>
-				<ul>
-					<li><strong>Ciudad:</strong> {{ weather.location.name }}</li>
-					<li><strong>Región:</strong> {{ weather.location.region }}</li>
-					<li><strong>País:</strong> {{ weather.location.country }}</li>
-					<li><strong>Temperatura:</strong> {{ weather.current.temp_c }} °C</li>
-				</ul>
-		</div>
-		<div ng-show="error">
-			<h4>{{ mensaje }}</h4>
-		</div>
+			<div class="well col-sm-6 col-sm-offset-3" ng-show="mostrar">
+				<div class="row">
+					<div class="col-sm-6">
+						<i>Ãšltimo update:</i> {{ weather.current.last_updated }}
+					</div>
+					<div class="col-sm-6 text-right">
+						<i style="position: relative; bottom: 1.5em;">{{
+							weather.current.condition.text }}</i> <img
+							ng-src="{{ weather.current.condition.icon }}"></img>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-6">
+						<h4>{{ weather.location.name }}</h4>
+						<ul>
+							<li><strong>RegiÃ³n:</strong> {{ weather.location.region }}</li>
+							<li><strong>PaÃ­s:</strong> {{ weather.location.country }}</li>
+							<li><strong>Hora local:</strong> {{
+								weather.location.localtime }}</li>
+						</ul>
+					</div>
+					<div class="col-sm-6">
+						<h4>Reporte</h4>
+						<ul>
+							<li><strong>Temperatura:</strong> {{ weather.current.temp_c
+								}} Â°C</li>
+							<li><strong>Vel. viento:</strong> {{
+								weather.current.wind_kph }} km/h</li>
+							<li ng-show="precipita"><strong>PrecipitaciÃ³n:</strong> {{
+								weather.current.precip_mm }} mm</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="alert alert-danger" ng-show="error">
+				<strong>Error: </strong>{{ mensaje }}
+			</div>
 		</div>
 	</div>
 
+	<script type="text/javascript"
+		src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<script type="text/javascript" src="static/scripts/weather-jQuery.js">	</script>
+	<script type="text/javascript"
+		src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+	<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 	
 	<script type="text/javascript" src="static/scripts/weather.js"></script>
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 	
- 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+
 	
-	<script type="text/javascript">
-	
-		jQuery(function () 
-			 {
-				 jQuery("#f_elem_city").autocomplete({
-					source: function (request, response) {
-					 jQuery.getJSON(
-						"http://gd.geobytes.com/AutoCompleteCity?callback=?&q="+request.term,
-						function (data) {
-						 response(data);
-						}
-					 );
-					},
-					minLength: 3,
-					select: function (event, ui) {
-					 var selectedObj = ui.item;
-					 jQuery("#f_elem_city").val(selectedObj.value);
-					 return false;
-					},
-					open: function () {
-					 jQuery(this).removeClass("ui-corner-all").addClass("ui-corner-top");
-					},
-					close: function () {
-					 jQuery(this).removeClass("ui-corner-top").addClass("ui-corner-all");
-					}
-				 });
-				 jQuery("#f_elem_city").autocomplete("option", "delay", 100);
-				});
-	</script>
 </body>
 </html>

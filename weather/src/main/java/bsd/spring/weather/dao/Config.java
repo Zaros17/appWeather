@@ -1,7 +1,6 @@
 package bsd.spring.weather.dao;
 
 public class Config {
-	private static final String dbUser = "";
-	private static final String dbPass = "";
+	public static final String dbPath= "mongodb://root:rootpw@ds113935.mlab.com:13935/development";
 
 }
