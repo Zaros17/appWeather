@@ -31,10 +31,10 @@ public class WeatherController {
 	WeatherService weatherService = new WeatherServiceImpl();
 	
 	/*
-	 * Método que controla las peticiones POST de "/weather".
-	 * Se recibe mediante la anotación @RequestBody el JSON construido por el script de Angular que contiene la información de la consulta
+	 * MÃ©todo que controla las peticiones POST de "/weather".
+	 * Se recibe mediante la anotaciÃ³n @RequestBody el JSON construido por el script de Angular que contiene la informaciÃ³n de la consulta
 	 * realizada por el usuario. Mediante el objeto Gson de la dependencia gson transformo el json en una clase pojo, en este caso, mi modelo Tiempo.
-	 * Tras insertar la consulta en la base de datos, se establece un control sobre la sesión para que el historial sepa si se ha realizado
+	 * Tras insertar la consulta en la base de datos, se establece un control sobre la sesiÃ³n para que el historial sepa si se ha realizado
 	 * una consulta o no.
 	 */
 	@RequestMapping(value = { "/weather" }, method = { RequestMethod.POST }, consumes = { "application/json" })
@@ -45,7 +45,7 @@ public class WeatherController {
 		weatherService.insertarConsulta(weather, req.getSession().getAttribute("username").toString());
 		
 		/*
-		 * Si el atributo de sesión booleano "haConsulado" es nulo (el usuario no ha hecho una consulta aún) o el atributo de sesión
+		 * Si el atributo de sesiÃ³n booleano "haConsulado" es nulo (el usuario no ha hecho una consulta aÃºn) o el atributo de sesiÃ³n
 		 * es falso (el usuario viene del historial) se setea a true
 		 */
 		if(req.getSession().getAttribute("haConsultado") == null || req.getSession().getAttribute("haConsultado").equals(false) )
@@ -55,14 +55,14 @@ public class WeatherController {
 	}
 	
 	/*
-	 * Método que maneja las peticiones GET de "/historial".
+	 * MÃ©todo que maneja las peticiones GET de "/historial".
 	 * 
-	 * Mediante un atributo de sesión controlo si se ha hecho una consulta nueva desde que se hizo la
-	 * petición a la base de datos con la finalidad de no tener que realizar una petición a la bd en
+	 * Mediante un atributo de sesiÃ³n controlo si se ha hecho una consulta nueva desde que se hizo la
+	 * peticiÃ³n a la base de datos con la finalidad de no tener que realizar una peticiÃ³n a la bd en
 	 * caso de que no la haya hecho.
 	 * 
-	 * Despues de pasar los filtros, se recogen de la base de datos las consultas del usuario y se añaden
-	 * a una lista que después se enviará a la vista.
+	 * Despues de pasar los filtros, se recogen de la base de datos las consultas del usuario y se aÃ±aden
+	 * a una lista que despuÃ©s se enviarÃ¡ a la vista.
 	 */
 	@GetMapping({ "/historial" })
 	public ModelAndView historial(HttpServletRequest req) {
@@ -70,12 +70,12 @@ public class WeatherController {
 		ModelAndView modelo = new ModelAndView("historial");
 		
 		/*
-		 * Si el usuario intenta acceder al historial desde la url sin haber iniciado sesión se le redirecciona a "/"
+		 * Si el usuario intenta acceder al historial desde la url sin haber iniciado sesiÃ³n se le redirecciona a "/"
 		 */
 		if (req.getSession(false) != null && req.getSession().getAttribute("username") != null) {
 
 			/*
-			 * Si el atributo de sesión booleano "haConsulado" es nulo (el usuario no ha hecho una consulta aún) o 
+			 * Si el atributo de sesiÃ³n booleano "haConsulado" es nulo (el usuario no ha hecho una consulta aÃºn) o 
 			 * es verdadero (el usuario ha realizado una consulta) se setea a false.
 			 */
 			if(req.getSession().getAttribute("haConsultado") == null || req.getSession().getAttribute("haConsultado").equals(true)) {
@@ -89,12 +89,6 @@ public class WeatherController {
 
 			}
 			
-			/*
-			 * Si el atributo de sesión "haConsultado" existe y el número de consultas son superiores a 10, se eliminan todas las consultas de la bd.
-			 */
-			if(req.getSession().getAttribute("haConsultado") == null && consultas.size() >= 10) {	
-					weatherService.eliminarConsultas();
-			}
 
 		} else {
 			modelo.setViewName("redirect:/");
