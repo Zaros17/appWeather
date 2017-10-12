@@ -2,11 +2,10 @@
 Aplicación Spring MVC que consulta servicio web rest de meteorología
 
 http://appweatherspring.herokuapp.com/
+Para un correcto funcionamiento del autocompletado se recomienda utilizar Google Chrome.
 
 Versión https disponible https://appweatherspring.herokuapp.com/
 Si se utiliza, asegúrese de activar la opción "Cargar scripts no seguros" para un funcionamiento correcto de la aplicación.
-
-Para un correcto funcionamiento del autocompletado se recomienda utilizar Google Chrome.
 
 Instrucciones de uso:
   
